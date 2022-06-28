@@ -184,14 +184,29 @@ class Customs
         $cells = $crawler->filterXPath('//table[@id="companyList"]/tbody/tr/td['.$col_index.'][normalize-space(text())='.$number.']/../td')->extract(['_text']);
 
         if ($cells && count($cells) == 6) {
-            return [
-                'Code' => trim($cells[0]),
-                'Name' => trim($cells[1]),
-                'Address' => trim($cells[2]),
-                'Sector' => trim($cells[3]),
-                'MedNo' => trim($cells[4]),
-                'Tin' => trim($cells[5]),
-            ];
+            $Code = trim($cells[0]);
+            $Name = trim($cells[1]);
+            $Address = trim($cells[2]);
+            $Sector = trim($cells[3]);
+            $MedNo = trim($cells[4]);
+            $Tin = trim($cells[5]);
+
+            if ($MedNo == 'NA') {
+                $MedNo = null;
+            }
+
+            if ($Tin == 'NA') {
+                $Tin = null;
+            }
+            
+            return compact(
+                'Code',
+                'Name',
+                'Address',
+                'Sector',
+                'MedNo',
+                'Tin'
+            );
         }
 
         return null;
