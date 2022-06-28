@@ -198,7 +198,7 @@ class Customs
             if ($Tin == 'NA') {
                 $Tin = null;
             }
-            
+
             return compact(
                 'Code',
                 'Name',
