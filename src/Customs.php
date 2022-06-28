@@ -5,6 +5,7 @@ namespace Javaabu\Customs;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\DomCrawler\Crawler;
 
 class Customs
 {
@@ -14,6 +15,11 @@ class Customs
      * @var Client
      */
     protected $client;
+
+    /**
+     * @var \Goutte\Client
+     */
+    protected $goutte_client;
 
     /**
      * @var string
@@ -67,13 +73,33 @@ class Customs
     {
         $client_options = array_merge([
             'base_uri' => $this->api_url,
-            'headers' => [
+            /*'headers' => [
                 'Authorization' => 'Basic ' . $this->generateAccessToken(),
                 'Content-Type'  => 'application/json',
-            ],
+            ],*/
         ], $client_options);
 
-        return new Client($client_options);
+        $client = new Client($client_options);
+
+        $this->goutte_client = new \Goutte\Client();
+
+        return $client;
+    }
+
+    /**
+     * Send a request to an endpoint using the crawler
+     *
+     * @param string $endpoint
+     * @param array $params
+     * @param string $method
+     */
+    protected function sendCrawlerRequest(string $endpoint, $params = [], $method = 'GET'): Crawler
+    {
+        $endpoint = ltrim($endpoint, '/');
+
+        $url = $this->api_url . '/' . $endpoint;
+
+        return $this->goutte_client->request($method, $url, $params);
     }
 
     /**
@@ -92,6 +118,20 @@ class Customs
         return $this->client->request($method, $endpoint, [
             $params_name => $params,
         ]);
+    }
+
+    /**
+     * Get a json representation of a trader
+     *
+     * @param string $number
+     * @param string $field
+     * @return array
+     */
+    protected function getJsonTrader(string $number, string $field): ?array
+    {
+        $crawler = $this->sendCrawlerRequest('eServices/CompanySearch', ['query' => $number]);
+
+
     }
 
     /**
