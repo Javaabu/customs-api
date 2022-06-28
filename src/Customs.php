@@ -99,7 +99,11 @@ class Customs
 
         $url = $this->api_url . '/' . $endpoint;
 
-        return $this->goutte_client->request($method, $url, $params);
+        if ($params) {
+            $url .= '?' . http_build_query($params);
+        }
+
+        return $this->goutte_client->request($method, $url);
     }
 
     /**
@@ -121,6 +125,48 @@ class Customs
     }
 
     /**
+     * Escape the xpath
+     * https://stackoverflow.com/questions/24410671/how-to-escape-xpath-in-php
+     */
+    protected function escapeQuote(string $value): string
+    {
+        if (false === strpos($value, '"')) {
+            return '"' . $value . '"';
+        }
+
+        if (false === strpos($value, '\'')) {
+            return '\'' . $value . '\'';
+        }
+
+        // if the value contains both single and double quotes, construct an
+        // expression that concatenates all non-double-quote substrings with
+        // the quotes, e.g.:
+        //
+        //    concat("'foo'", '"', "bar")
+        $sb = 'concat(';
+        $substrings = explode('"', $value);
+        for ($i = 0; $i < count($substrings); ++$i) {
+            $needComma = ($i > 0);
+            if ($substrings[$i] !== '') {
+                if ($i > 0) {
+                    $sb .= ', ';
+                }
+                $sb .= '"' . $substrings[$i] . '"';
+                $needComma = true;
+            }
+            if ($i < (count($substrings) - 1)) {
+                if ($needComma) {
+                    $sb .= ', ';
+                }
+                $sb .= "'\"'";
+            }
+        }
+        $sb .= ')';
+
+        return $sb;
+    }
+
+    /**
      * Get a json representation of a trader
      *
      * @param string $number
@@ -131,7 +177,24 @@ class Customs
     {
         $crawler = $this->sendCrawlerRequest('eServices/CompanySearch', ['query' => $number]);
 
+        $col_index = $field == 'med_number' ? 5 : 1;
+        $number = $this->escapeQuote($number);
 
+        // https://stackoverflow.com/questions/4608097/xpath-to-select-a-table-row-that-has-a-cell-containing-specified-text
+        $cells = $crawler->filterXPath('//table[@id="companyList"]/tbody/tr/td['.$col_index.'][normalize-space(text())='.$number.']/../td')->extract(['_text']);
+
+        if ($cells && count($cells) == 6) {
+            return [
+                'Code' => trim($cells[0]),
+                'Name' => trim($cells[1]),
+                'Address' => trim($cells[2]),
+                'Sector' => trim($cells[3]),
+                'MedNo' => trim($cells[4]),
+                'Tin' => trim($cells[5]),
+            ];
+        }
+
+        return null;
     }
 
     /**
