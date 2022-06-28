@@ -160,25 +160,25 @@ class Customs
     }
 
     /**
-     * Get a single business entity
+     * Get a single trader by med number
      *
      * @param string $registration_number
      * @return array
      */
     public function getTraderByMedNumber(string $registration_number): ?array
     {
-        return $this->getJson('BusinessEntities/GetTrader', ['traderNumber' => $registration_number]);
+        return $this->getJsonTrader($registration_number, 'med_number');
     }
 
 
     /**
-     * Get a single product
+     * Get a single trader by c number
      *
-     * @param string $registration_number
+     * @param string $c_number
      * @return array
      */
-    public function getTraderByCNumber(string $registration_number): ?array
+    public function getTraderByCNumber(string $c_number): ?array
     {
-        return $this->getJson('products/GetProduct', ['productNumber' => $registration_number]);
+        return $this->getJsonTrader($c_number, 'c_number');
     }
 }
