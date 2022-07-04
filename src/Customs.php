@@ -183,7 +183,7 @@ class Customs
         // https://stackoverflow.com/questions/4608097/xpath-to-select-a-table-row-that-has-a-cell-containing-specified-text
         $cells = $crawler->filterXPath('//table[@id="companyList"]/tbody/tr/td['.$col_index.'][normalize-space(text())='.$number.']/../td')->extract(['_text']);
 
-        if ($cells && count($cells) == 6) {
+        if ($cells && count($cells) >= 6) {
             $Code = trim($cells[0]);
             $Name = trim($cells[1]);
             $Address = trim($cells[2]);
