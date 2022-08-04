@@ -61,7 +61,7 @@ Add your Customs Username, Password, and Url (optional) to your `config/services
     'username' => env('CUSTOMS_USERNAME'), // Customs API username 
     'password' => env('CUSTOMS_PASSWORD'), // Customs API password 
     'url' => env('CUSTOMS_API_URL'), // optional, use only if you need to override the default,
-                                  // defaults to https://api-business.egov.mv/WebApi/api/   
+                                  // defaults to https://api.customs.gov.mv/api/
 ],
 ...
 ```
