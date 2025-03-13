@@ -1,8 +1,8 @@
 # Customs API
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/javaabu/customs-api.svg?style=flat-square)](https://packagist.org/packages/javaabu/customs-api)
-[![Build Status](https://img.shields.io/travis/javaabu/customs-api/master.svg?style=flat-square)](https://travis-ci.org/javaabu/customs-api)
-[![Quality Score](https://img.shields.io/scrutinizer/g/javaabu/customs-api.svg?style=flat-square)](https://scrutinizer-ci.com/g/javaabu/customs-api)
+[![Test Status](../../actions/workflows/run-tests.yml/badge.svg)](../../actions/workflows/run-tests.yml)
+![Code Coverage Badge](./.github/coverage.svg)
 [![Total Downloads](https://img.shields.io/packagist/dt/javaabu/customs-api.svg?style=flat-square)](https://packagist.org/packages/javaabu/customs-api)
 
 PHP SDK for interacting with the Maldives [Customs Service API](https://api.customs.gov.mv/)
